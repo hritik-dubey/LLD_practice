@@ -1,0 +1,174 @@
+
+start time 9:50
+here we have to build the amazon package locker system
+1) delivery person should allocate the locker for the package
+2) allocation is random but can change 
+3) delivery person will send the otp to use for taking the parcel
+4) admin can see all the vacate lockers 
+5) admin can for vacate the locker if parcel is not received from more then 3 days
+6) after package received we should vacate the locker 
+
+
+
+golden rule
+1) any share state is there and multiple object instance creations problem/object explosion  -- singleton
+2) any task can be done in multiple ways - strategy pattern 
+
+
+conclusion 
+no singleton strategy fro the locker allocations 
+
+
+entities
+    package
+    user
+    locker
+
+
+
+service classes
+    locker services
+    otp services
+    notification services(if needed)
+
+
+enum package_size{
+    small,
+    medium,
+    large
+}
+
+enum user_type{
+    employee,
+    admin,
+    customer
+}
+
+class package {
+    //property
+    int package_id
+    enum package_size
+
+    // getter setter for property
+}
+
+
+
+class locker {
+    //property
+    int locker_id
+    enum locker_size
+    boolean is_vacate = true   // to know whether this is empty or not 
+    time occupied_time         // to know is this locker is over locked  
+
+    // getter setter for property
+}
+
+class user{
+    int userId
+    enum type:user_type
+    string name
+
+    // constructor for all the properties
+}
+
+
+class otpServices{
+    int optList:record{otp:int,user:id} 
+    
+
+    generateOtp(user_id:int,locker_id:int){
+        let otp =  math.random()
+        optList.add(userid,otp)
+        return this.otp
+    }
+
+    verifyOtp(otp:int,user_id:int,locker_id:int){
+        let otp = optList.get(user_id)
+        return otp == otp 
+    }
+}
+
+interface lockerAllocationsStrategy{
+    allocate(package:package)
+}
+
+
+class randomAllocations implements lockerAllocationsStrategy{
+    allocate(package:package,lockers:locker){
+        lockers[math.floor(math.random() * lockers.length)]
+    }
+}
+
+
+
+class lockerServices(){
+    private lockers:locker = locker[]
+    private lockerAllocationsStrategy:lockerAllocationsStrategy
+
+    // constructor
+    constructor(lockerAllocationsStrategy:lockerAllocationsStrategy){
+        this.lockerAllocationsStrategy = lockerAllocationsStrategy
+    }
+    
+    // create locker
+    void createLocker(locker_id,locker_size,is_vacate,occupied_time){
+        let locker:locker = new locker(locker_id,locker_size,is_vacate,occupied_time)
+        this.lockers.push(locker)
+    }
+
+    void vacateLocker(locker_id:int){
+        let locker  =  this.lockers.filter(locker=>locker.locker_id = locker_id)
+        locker.is_vacate = true,
+        locker.occupied_time = null
+        
+    }
+
+    // get all the vacate locker 
+    locker getAllVacateLocker(){
+        return this.lockers.filter(locker=>locker.is_vacate)
+    }
+
+    // allocate locker
+    locker allocateLocker(package){
+        let vacate_locker = this.getAllVacateLocker()
+        let locker =  this.lockerAllocationsStrategy(package,vacate_locker)
+        locker.is_vacate = false,
+        locker.occupied_time = Date.now(),
+        return locker
+    }
+
+    // overdueLocker 
+    locker overdueLocker(){
+        return this.lockers.filter(locker=>locker.occupied_time + 3 days > date.now())
+    }
+}
+
+
+let lockerServicesInstance = new lockerServices(lockerAllocationsStrategy)
+lockerServices.createLocker(1,small,true,)
+lockerServices.createLocker(2,medium,true,)
+lockerServices.createLocker(3,large,true,)
+
+
+let adminUser = new user(admin, "jack")
+let customerUser = new user(customer, "boob")
+let employeeUser = new user(employee, "smith")
+
+// delivery person assigning locker and sending the otp
+let locker  = employeeUser.allocate(package)
+let otp = otpService.generateOtp(customerUser,locker.locker_id)
+
+// customer validating the otp and vacating the locker 
+customerUser.verifyOtp(1234,2,locker_id)
+lockerServices.vacateLocker(locker_id)
+
+//admin vacating the overdue locker
+let lockers =  lockerServices.getAllVacateLocker(adminUser) // here we will implement the admin services separately to handel this  
+
+
+
+
+
+
+completed 23:20
