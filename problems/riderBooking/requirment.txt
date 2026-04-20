@@ -1,0 +1,67 @@
+LLD 
+ride sharing
+
+functions
+passenger boking
+dirver accept
+pasanger rate
+driver rate
+paymet 
+search
+fair calculations
+details managment fro rider and the passanger
+
+non-functions
+no duplicate booking
+scalable
+relibel
+
+
+entites
+
+passanger
+driver
+ride
+payment
+rating
+
+datamembers
+passanger 
+name
+age 
+locations 
+rating[]
+
+driver
+name
+age 
+locations 
+rating[]
+
+ride
+riderId
+driverId
+rating[]
+payment
+
+
+rating
+driverId
+riderId
+date
+rate
+
+payment
+riderId
+totalAmount
+
+fair
+
+
+
+
+here for the creational of the object(dirve) cause after some time we might need to distigused in two weeler driver or three wholer dirver 
+same fro the rider we will use the factory only
+
+for the fair calcuations and the serch we will use the startgy pattern 
+and i will use the service and the repository patter for in memeory management

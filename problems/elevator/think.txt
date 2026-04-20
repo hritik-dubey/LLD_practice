@@ -1,0 +1,79 @@
+LLD problem multi elevator
+
+entities classes
+enum elevatorState {
+    ideal,
+    up,
+    down
+} 
+
+enum directions{
+    up,
+    down
+}
+
+class elevator {
+    int id,
+    string state:elevatorState:ideal
+    int currentFloor:floor : 0
+    int capacity
+
+    // getters and setter
+    constructor(id,capacity)
+}
+
+class floor{
+    int id
+    int number
+}
+
+
+class elevatorController{
+    private elevators:[elevator]  // all the elevator
+    private Move
+
+    elevatorController(moveStrategies){
+        this.move = moveStrategies
+    }
+
+    // add elevator getters
+    addElevator(elevator:elevator){
+        this.elevators.push(elevator)
+    }
+
+
+    callElevator(currentFloor:int,direction:directions):void{
+        // here should add the logic of calling the elevator on the floor
+        this.move(currentFloor,direction)
+    }
+
+
+    assignFloor(elevatorId:int,floorNumber:int){
+        // this will lett you in floor
+    }
+}
+
+
+class elevatorMoveStrategies{
+    move()\\ here we will add the logic of movement
+}
+
+
+
+class main{
+
+    let elevator1 = new elevator(1,10)
+    let elevator2 = new elevator(2,20)
+
+
+    let elevatorController = new elevatorController(moveStrategies)
+
+    elevatorController.addElevator(elevator1)
+    elevatorController.addElevator(elevator2)
+
+    
+     
+
+}
+
+

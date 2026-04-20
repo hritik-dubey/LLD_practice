@@ -1,6 +1,12 @@
 import { User } from './User';
 import { MeetingRoom } from './MeetingRoom';
 import { MeetingScheduler } from './MeetingScheduler';
+import { MeetingService } from './MeetingService';
+import { InMemoryMeetingRepository } from './InMemoryMeetingRepository';
+import { InMemoryMeetingRoomRepository } from './InMemoryMeetingRoomRepository';
+import { RoomAvailabilityService } from './RoomAvailabilityService';
+import { RecurrenceService } from './RecurrenceService';
+import { EmailNotificationService } from './EmailNotificationService';
 
 // Step 1: Create users
 const alice = new User('U1', 'Alice', 'alice@example.com');
@@ -8,51 +14,66 @@ const bob = new User('U2', 'Bob', 'bob@example.com');
 const charlie = new User('U3', 'Charlie', 'charlie@example.com');
 
 // Step 2: Create meeting rooms
-const roomA = new MeetingRoom('R1', 'Conference Room A', 5, '1st Floor');
-const roomB = new MeetingRoom('R2', 'Conference Room B', 10, '2nd Floor');
+const roomA = new MeetingRoom('R1', 5, '1st Floor');
+const roomB = new MeetingRoom('R2', 10, '2nd Floor');
 
-// Step 3: Get the scheduler instance
-const scheduler = MeetingScheduler.getInstance();
+// Step 3: Initialize dependencies
+const meetingRepo = new InMemoryMeetingRepository();
+const roomRepo = new InMemoryMeetingRoomRepository();
+const availabilityService = new RoomAvailabilityService();
+const recurrenceService = new RecurrenceService();
+const notificationService = new EmailNotificationService();
 
-// Step 4: Book a meeting
+// Save rooms to repository
+roomRepo.save(roomA);
+roomRepo.save(roomB);
+
+// Step 4: Create services and scheduler
+const meetingService = new MeetingService(
+    meetingRepo,
+    roomRepo,
+    availabilityService,
+    recurrenceService,
+    notificationService
+);
+const scheduler = new MeetingScheduler(meetingService);
+
+// Step 5: Book a meeting
 try {
-    const meeting1 = scheduler.createMeeting(
-        roomA,
+    const meetings1 = scheduler.createMeeting(
+        'R1',
         new Date('2025-12-23T10:00:00'),
         new Date('2025-12-23T11:00:00'),
-        alice,
         [alice, bob, charlie]
     );
 
-    console.log('Meeting successfully created:', meeting1);
+    console.log('Meeting successfully created:', meetings1);
 } catch (err: any) {
     console.error('Failed to create meeting:', err.message);
 }
 
-// Step 5: Try booking overlapping meeting (should throw error)
+// Step 6: Try booking overlapping meeting (should throw error)
 try {
-    const meeting2 = scheduler.createMeeting(
-        roomA,
+    const meetings2 = scheduler.createMeeting(
+        'R1',
         new Date('2025-12-23T10:30:00'),
         new Date('2025-12-23T11:30:00'),
-        bob,
         [bob, charlie]
     );
 } catch (err: any) {
     console.error('Failed to create meeting:', err.message);
 }
 
-// Step 6: Book meeting in another room (allowed)
+// Step 7: Book meeting in another room (allowed)
 try {
-    const meeting3 = scheduler.createMeeting(
-        roomB,
+    const meetings3 = scheduler.createMeeting(
+        'R2',
         new Date('2025-12-23T10:30:00'),
         new Date('2025-12-23T11:30:00'),
-        charlie,
         [alice, charlie]
     );
 
-    console.log('Meeting successfully created:', meeting3);
+    console.log('Meeting successfully created:', meetings3);
 } catch (err: any) {
     console.error('Failed to create meeting:', err.message);
 }

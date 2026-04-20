@@ -1,13 +1,10 @@
+import { Slot } from './Slot';
+
 export class MeetingRoom {
     constructor(
-        public id: string,
-        public name: string,
+        public roomId: string,
         public capacity: number,
-        public location: string
+        public location: string,
+        public slots: Slot[] = []
     ) {}
-
-    // Room-specific check example
-    canHost(participantCount: number): boolean {
-        return participantCount <= this.capacity;
-    }
 }
