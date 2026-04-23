@@ -1,0 +1,131 @@
+design split wise
+1) system should allow user to create and maintain there user profile/account
+2) user can create the group and add member/participants into this
+3) in group user can add the expense and it should spit amount the participants
+4) user should view there individual transactions
+5) user should see the settle up balance 
+
+
+
+// entities
+1) user  name email mobile, total due, collect 
+2) group name created by participants user
+3) transaction created by user in a group
+
+
+// services 
+user update profile (settle up balance) need to see how to achieve  this 
+group add member,add expense 
+transactions see-expense
+
+
+entities class
+
+class user {
+    string  id
+    string  name
+    string  mobile
+    string  email
+    string  totalTransactions
+
+    // all the getter setter
+}
+
+
+class group {
+    string  id
+    string groupName
+    string createdBy
+    user[] users
+
+}
+
+enum transactionType{
+    credit,
+    debit
+}
+
+class expense {
+    string id
+    string userId
+    group  groupId 
+    number amount 
+    type transactionType
+}
+
+
+// services classes 
+class userServices{
+
+    constructor(){
+
+    }
+
+    // updated profile()
+    user updateProfile(user:user){
+        // we will use the getter setter and update this
+    }
+
+    // settle up balanced
+}
+
+
+class groupServices{
+    
+    constructor(){
+
+    }
+
+    create Group(userId,name){
+        return new Group()
+    }
+
+    // add members
+    group addMember(user:user,group:group){
+        return group.participants.push(user)
+    }
+
+    // same fro the remove 
+    group addMember(user:user,group:group){
+        let updatedUser = group.participants.filter(user => user.id !== user.id)
+        group.participants = updatedUser 
+    }
+
+    // 
+}
+
+interface splitStrategy{
+    split(user[]:users,number totalTransactions)
+}
+
+
+class equalSplitStrategy implements splitStrategy{
+    
+    split(user:paidUser,group:group:,number totalAmount){
+        let totalUser = users.length;
+        let individualAmountToPay = totalAmount/totalUser
+        group.users.map((user)=>{
+            if(user.id === paidUser.id){
+            new expense((user.id,group.id,totalAmount,transactionType.debit))
+            }
+            new expense((user.id,group.id,individualAmountToPay,transactionType.debit))
+        })         
+    }
+}
+
+
+
+class expenseServices{
+    private splitStrategy:splitStrategy
+
+    constructor(splitStrategy:){
+        this.splitStrategy = splitStrategy
+    }
+
+    expense[] addExpense(user:userPaid,group,group,int totalAmount){
+        splitStrategy.split(userPaid,group,totalAmount)
+   }    
+}
+
+
+let user = new user(...details)
