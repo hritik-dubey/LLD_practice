@@ -47,7 +47,8 @@ enum transactionType{
 
 class expense {
     string id
-    string userId
+    string paidUserId
+    string owesUserId
     group  groupId 
     number amount 
     type transactionType
@@ -66,7 +67,7 @@ class userServices{
         // we will use the getter setter and update this
     }
 
-    // settle up balanced
+    //
 }
 
 
@@ -104,11 +105,11 @@ class equalSplitStrategy implements splitStrategy{
     split(user:paidUser,group:group:,number totalAmount){
         let totalUser = users.length;
         let individualAmountToPay = totalAmount/totalUser
-        group.users.map((user)=>{
-            if(user.id === paidUser.id){
-            new expense((user.id,group.id,totalAmount,transactionType.debit))
+        group.users.map((oweUser)=>{
+            if(oweUser.id === paidUser.id){
+            new expense((group.id,totalAmount,paidUser.id,oweUser.id,transactionType.debit))
             }
-            new expense((user.id,group.id,individualAmountToPay,transactionType.debit))
+            new expense((group.id,individualAmountToPay,paidUser.id,oweUser.id,transactionType.debit))
         })         
     }
 }
@@ -129,3 +130,18 @@ class expenseServices{
 
 
 let user = new user(...details)
+
+
+learning does i need to create the mapping for each and every user with others
+// Balance tracking userA owes me this , i owes this to UserB
+
+1) here i am thinking in terms of expense but how we will store the split if different split types comes
+
+so add the split array in the expense 
+
+2) we missed to do the balanced calculations
+    fro who own how
+
+
+3) notifications is out of scope as of now 
+
